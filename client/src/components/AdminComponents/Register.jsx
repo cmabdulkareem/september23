@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -9,13 +10,20 @@ function Register() {
   const [password, setPassword] = useState("");
   const [otp, setOtp] = useState("");
 
+  const navigate = useNavigate();
+
   function handleSubmit(e) {
     e.preventDefault();
 
     axios
       .post("http://localhost:3000/admin/register", { email, password, otp })
       .then((result) => {
-        console.log(result);
+        toast.success(result.data.message);
+        setEmail("");
+        setPassword("");
+        setTimeout(() => {
+          navigate("/admin/login");
+        }, 5000);
       })
       .catch((err) => {
         console.log(err);

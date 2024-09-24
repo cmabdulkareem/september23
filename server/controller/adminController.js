@@ -52,5 +52,59 @@ export const handleRegister = async (req, res) => {
     }
   };
 
+  export const handleLogin = (req, res)=>{
+    const {email, password} = req.body
 
+    if (!email || !password){
+      return res.status(400).json({error: "Enter both username and password"})
+    }else{
+      Admin.findOne({email})
+        .then((user)=>{
+          if(!user){
+            return res.status(400).json({error: "User not found"})
+          }else{
+            bcrypt.compare(password, user.password)   
+                .then((isMatch) => {
+                    if (!isMatch) {
+                        return res.status(401).json({ error: 'Invalid credentials' });
+                    }
+                    req.session.userId = user._id;
+                    req.session.useremail = user.email;
+                    res.status(200).json({ message: 'Login successful' });
+                })
+                .catch((error) => {
+                    console.error('Error comparing passwords:', error);
+                    res.status(500).json({ error: 'Internal server error' });
+                });
+          }
+        })
+        .catch((err)=>{
+          console.log(err)
+          res.status(500).json({ error: 'Internal server error' });
+        })
+    }
+  }
+
+
+  export const handleCheckAuth = (req, res)=>{
+    if(req.session.userId){
+      const email = req.session.useremail
+      return res.status(200).json({message: "User found", email: email})
+    }else{
+      res.status(400).json({error: "Not logged in"})
+    }
+  }
+
+
+  export const handleSignout = (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            console.error("Error destroying session", err);
+            return res.status(500).send("Internal server error");
+        } else {
+          res.status(200).send("Signout success");
+            console.log("Session destroyed successfully");
+        }
+    });
+}
 
