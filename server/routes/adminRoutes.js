@@ -4,7 +4,8 @@ import {
     handleRegister, 
     handleLogin, 
     handleCheckAuth, 
-    handleSignout } from '../controller/adminController.js'
+    handleSignout,
+    handleAddProducts } from '../controller/adminController.js'
 
 const router = express.Router()
 
@@ -14,5 +15,6 @@ router.post("/login", handleLogin)
 router.get("/checkauth", handleCheckAuth)
 router.get("/signout", handleSignout)
 
+router.post("/addproducts", handleAddProducts)
 
 export default router

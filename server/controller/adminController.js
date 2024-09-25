@@ -108,3 +108,10 @@ export const handleRegister = async (req, res) => {
     });
 }
 
+
+export const handleAddProducts = (req, res)=>{
+  const {itemName, itemDesc, itemPrice} = req.body
+  const {itemImage} = req.files
+
+  console.log({itemName, itemDesc, itemPrice, itemImage})
+}
