@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
 
 function AddProducts() {
   const [itemName, setItemName] = useState("");
@@ -25,9 +26,14 @@ function AddProducts() {
       })
       .then((result) => {
         console.log(result);
+        toast.success(result.data.message);
+        setItemName("");
+        setItemDesc("");
+        setItemPrice("");
+        document.getElementById("itemImage").value = "";
       })
       .catch((err) => {
-        console.log(err);
+        toast.error(err.data.response.error);
       });
   }
 

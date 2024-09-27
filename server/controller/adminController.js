@@ -1,6 +1,8 @@
 import { transporter } from "../config/nodemailer.js"
 import Admin from '../models/adminModel.js';
 import bcrypt from 'bcryptjs'
+import path from 'path'
+import productModel from "../models/productModel.js";
 
 let storedOtp = ''; 
 
@@ -113,5 +115,28 @@ export const handleAddProducts = (req, res)=>{
   const {itemName, itemDesc, itemPrice} = req.body
   const {itemImage} = req.files
 
-  console.log({itemName, itemDesc, itemPrice, itemImage})
+  console.log(itemImage)
+  
+  if(!itemImage){
+    return res.status(400).json({error: "please upload product image"})
+  }else{
+    productModel.create({itemName, itemDesc, itemPrice})
+    .then((newproduct)=>{
+      itemImage.mv(path.join("./public", "images", "products/", `${newproduct._id}.jpg`))
+      res.status(200).json({message: "product uploaded"})
+    })
+    .catch((err)=>{
+      res.status(500).json({error: "internal error"})
+    })
+  }
+}
+
+export const handleGetProducts = (req, res)=>{
+  productModel.find({})
+    .then((result)=>{
+      res.status(200).json({message: result})
+    })
+    .catch((err)=>{
+      res.status(500).json({error: "internal error"})
+    })
 }
