@@ -140,3 +140,26 @@ export const handleGetProducts = (req, res)=>{
       res.status(500).json({error: "internal error"})
     })
 }
+
+export const handleDeleteProduct = (req, res)=>{
+  const id = req.params.id
+  productModel.findByIdAndDelete(id)
+  .then(()=>{
+    res.status(200).json({message:"successfully deleted"})
+  })
+
+  .catch((error)=>{
+    res.status(500).json({error})
+  })
+}
+
+export const handleGetEditProduct = (req, res)=>{
+  const id = req.params.id
+  productModel.findById(id)
+    .then((product)=>{
+      res.status(200).json({message: product})
+    })
+    .catch((err)=>{
+      res.status(500).json({error: "internal server error"})
+    })
+}
